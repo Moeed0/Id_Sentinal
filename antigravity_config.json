@@ -1,0 +1,594 @@
+{
+    "project_metadata": {
+        "name": "IDSentinel",
+        "tagline": "GhostSim - Complete Identity Protection",
+        "version": "1.0.0+1",
+        "platform": "Flutter",
+        "supported_platforms": [
+            "Android",
+            "iOS",
+            "Web",
+            "Windows"
+        ],
+        "minimum_sdk": "3.0.0",
+        "state_management": "Riverpod",
+        "database": "Hive",
+        "backend_ready": "Firebase (configurable)"
+    },
+    "app_architecture": {
+        "pattern": "MVVM + Riverpod",
+        "routing": "Navigator 2.0",
+        "theme": "Material 3 with custom design system",
+        "localization": "English (expandable)",
+        "offline_support": true
+    },
+    "modules": [
+        {
+            "id": "cnic_monitor",
+            "name": "CNIC Misuse Monitor",
+            "screen": "CnicMonitorScreen",
+            "route": "/cnic-monitor",
+            "icon": "credit_card",
+            "gradient": [
+                "#9B59B6",
+                "#8E44AD"
+            ],
+            "features": [
+                "Bind CNIC to user account",
+                "Real-time monitoring alerts",
+                "Activity timeline with status",
+                "Push notifications for threats",
+                "Block/Allow list management"
+            ],
+            "alerts": [
+                "Microloan application attempts",
+                "SIM registration attempts",
+                "Mobile wallet signups",
+                "Job application fraud",
+                "Utility connection attempts"
+            ],
+            "ui_components": [
+                "CNIC input field with auto-formatting (12345-1234567-1)",
+                "Toggle monitoring switch",
+                "Activity cards with color-coded status",
+                "Real-time notification badge"
+            ],
+            "status": "MVP Complete"
+        },
+        {
+            "id": "doc_guard",
+            "name": "DocGuard - Document Forgery Detection",
+            "screen": "DocGuardScreen",
+            "route": "/doc-guard",
+            "icon": "document_scanner",
+            "gradient": [
+                "#3498DB",
+                "#2980B9"
+            ],
+            "features": [
+                "Upload documents (CNIC, degree, bills, property papers)",
+                "AI forensic analysis",
+                "ELA (Error Level Analysis)",
+                "Font consistency detection",
+                "Compression signature analysis",
+                "Highlight forged sections with overlays"
+            ],
+            "supported_documents": [
+                "CNIC (National ID)",
+                "Educational degrees",
+                "Utility bills",
+                "Property papers",
+                "Bank statements"
+            ],
+            "analysis_methods": [
+                "Font matching against database",
+                "JPEG compression artifacts",
+                "Edge detection anomalies",
+                "Metadata inconsistencies",
+                "Color profile analysis"
+            ],
+            "ui_components": [
+                "Image upload widget (camera/gallery)",
+                "Analysis progress indicator",
+                "Interactive image viewer with overlays",
+                "Detailed findings list",
+                "Confidence score display"
+            ],
+            "status": "MVP Complete"
+        },
+        {
+            "id": "leak_finder",
+            "name": "LeakFinder - Data Leak Checker",
+            "screen": "LeakFinderScreen",
+            "route": "/leak-finder",
+            "icon": "warning_amber",
+            "gradient": [
+                "#E67E22",
+                "#D35400"
+            ],
+            "features": [
+                "Check for CNIC leaks",
+                "Email breach detection",
+                "Phone number exposure",
+                "Address data leaks",
+                "Family details exposure",
+                "Dark web monitoring"
+            ],
+            "data_sources": [
+                "HaveIBeenPwned API integration",
+                "Dark web scraping (simulated)",
+                "Public database dumps",
+                "Social media exposure",
+                "Forum leaks"
+            ],
+            "fuzzy_matching": {
+                "cnic_variations": true,
+                "email_aliases": true,
+                "phone_formats": true,
+                "address_proximity": true
+            },
+            "ui_components": [
+                "Multi-type search input",
+                "Scan progress animation",
+                "Threat level dashboard",
+                "Leak source details",
+                "Action recommendations"
+            ],
+            "status": "MVP Complete"
+        },
+        {
+            "id": "photo_shield",
+            "name": "PhotoShield - Deepfake Detection",
+            "screen": "PhotoShieldScreen",
+            "route": "/photo-shield",
+            "icon": "photo_camera",
+            "gradient": [
+                "#16A085",
+                "#27AE60"
+            ],
+            "features": [
+                "Deepfake detection",
+                "AI-manipulated image detection",
+                "Invisible watermarking (steganography)",
+                "Reverse image search",
+                "Face-swap detection",
+                "GAN artifact detection"
+            ],
+            "detection_methods": [
+                "Facial landmark analysis",
+                "Skin texture inconsistencies",
+                "Lighting anomalies",
+                "Temporal coherence (for videos)",
+                "Frequency domain analysis"
+            ],
+            "watermarking": {
+                "type": "Steganographic",
+                "invisible_to_human_eye": true,
+                "resistant_to_compression": true,
+                "unique_identifier": "User UUID"
+            },
+            "ui_components": [
+                "Photo upload interface",
+                "Real-time analysis preview",
+                "Deepfake probability meter",
+                "Watermark status indicator",
+                "Reverse search results"
+            ],
+            "status": "MVP Complete"
+        },
+        {
+            "id": "mirror_trace",
+            "name": "MirrorTrace - Fake Account Detection",
+            "screen": "MirrorTraceScreen",
+            "route": "/mirror-trace",
+            "icon": "face",
+            "gradient": [
+                "#E91E63",
+                "#C2185B"
+            ],
+            "features": [
+                "Track photo usage across platforms",
+                "Facial geometry matching",
+                "Detect photo re-edits",
+                "Face-swap identification",
+                "Background modification detection",
+                "Account linking"
+            ],
+            "platforms_monitored": [
+                "Facebook",
+                "Instagram",
+                "Twitter/X",
+                "LinkedIn",
+                "Dating apps",
+                "Job portals"
+            ],
+            "matching_algorithm": {
+                "facial_landmarks": 68,
+                "geometry_vectors": true,
+                "similarity_threshold": 0.85,
+                "background_hash": true
+            },
+            "ui_components": [
+                "Photo upload for tracking",
+                "Platform scan results",
+                "Match confidence scores",
+                "Account preview cards",
+                "Report fake account button"
+            ],
+            "status": "MVP Complete"
+        },
+        {
+            "id": "app_cleanse",
+            "name": "AppCleanse - Risky App Detector",
+            "screen": "AppCleanseScreen",
+            "route": "/app-cleanse",
+            "icon": "cleaning_services",
+            "gradient": [
+                "#5C6BC0",
+                "#3F51B5"
+            ],
+            "features": [
+                "Scan installed applications",
+                "Detect spyware apps",
+                "Identify fake banking apps",
+                "Flag predatory loan apps",
+                "Analyze app permissions",
+                "Monitor background network usage"
+            ],
+            "threat_detection": [
+                "Permission overreach",
+                "Background data usage",
+                "SMS interception",
+                "Call recording",
+                "Location tracking",
+                "Contact access abuse"
+            ],
+            "risk_categories": {
+                "high": "Red - Immediate threat",
+                "medium": "Orange - Suspicious activity",
+                "low": "Yellow - Minor concerns",
+                "safe": "Green - Verified safe"
+            },
+            "ui_components": [
+                "App list with icons",
+                "Risk score badges",
+                "Permission breakdown",
+                "Uninstall shortcuts",
+                "Detailed threat explanation"
+            ],
+            "status": "MVP Complete"
+        },
+        {
+            "id": "sms_scanner",
+            "name": "SMS Threat Scanner",
+            "screen": "SmsScannerScreen",
+            "route": "/sms-scanner",
+            "icon": "message",
+            "gradient": [
+                "#FFC107",
+                "#FF9800"
+            ],
+            "features": [
+                "Read and analyze SMS messages",
+                "Detect phishing links",
+                "Identify scam patterns",
+                "NLP-based threat detection",
+                "Flag OTP phishing",
+                "Report scam SMS"
+            ],
+            "detection_patterns": [
+                "Urgency keywords (URGENT, IMMEDIATELY, EXPIRE)",
+                "Suspicious links (bit.ly, shortened URLs)",
+                "Fake bank alerts",
+                "Prize/lottery scams",
+                "OTP phishing",
+                "Malicious APK links"
+            ],
+            "nlp_analysis": {
+                "sentiment_analysis": true,
+                "entity_extraction": true,
+                "intent_classification": true,
+                "language_models": [
+                    "BERT",
+                    "Custom trained"
+                ]
+            },
+            "ui_components": [
+                "Chat-style message view",
+                "Threat level indicators",
+                "Link safety checker",
+                "Block number option",
+                "Report to authorities"
+            ],
+            "status": "MVP Complete"
+        }
+    ],
+    "additional_features": [
+        {
+            "name": "Emergency CNIC Lock",
+            "description": "Temporarily freeze CNIC for banking, telecom, microloans",
+            "priority": "High",
+            "implementation": "Backend API + Government integration"
+        },
+        {
+            "name": "Multi-CNIC Monitoring",
+            "description": "Monitor family members' CNICs under one account",
+            "priority": "High",
+            "implementation": "User relationship mapping + Permissions"
+        },
+        {
+            "name": "Identity Recovery Guidance",
+            "description": "Step-by-step recovery for detected fraud",
+            "priority": "Medium",
+            "implementation": "Interactive wizard + Document templates"
+        },
+        {
+            "name": "Analytics Dashboard",
+            "description": "Visual charts showing threats over time",
+            "priority": "Medium",
+            "implementation": "FL Chart integration + Time-series data"
+        },
+        {
+            "name": "Gamified Security Tips",
+            "description": "Daily tips with rewards system",
+            "priority": "Low",
+            "implementation": "Content management + Point system"
+        }
+    ],
+    "ui_ux_guidelines": {
+        "design_system": {
+            "typography": {
+                "font_family": "Inter (Google Fonts)",
+                "heading_weights": [
+                    600,
+                    700,
+                    800
+                ],
+                "body_weights": [
+                    400,
+                    500
+                ],
+                "sizes": {
+                    "display_large": 32,
+                    "display_medium": 24,
+                    "display_small": 20,
+                    "body_large": 16,
+                    "body_medium": 14,
+                    "body_small": 12
+                }
+            },
+            "colors": {
+                "primary": "#6C5CE7",
+                "secondary": "#00B894",
+                "accent": "#FF7675",
+                "warning": "#FDCB6E",
+                "danger": "#D63031",
+                "success": "#00B894",
+                "dark_background": "#0F0F1E",
+                "dark_surface": "#1A1A2E",
+                "dark_card": "#16213E",
+                "light_background": "#F5F6FA",
+                "light_surface": "#FFFFFF",
+                "light_card": "#FFFFFF"
+            },
+            "spacing": {
+                "unit": 4,
+                "xs": 4,
+                "sm": 8,
+                "md": 16,
+                "lg": 24,
+                "xl": 32
+            },
+            "border_radius": {
+                "small": 8,
+                "medium": 12,
+                "large": 16,
+                "xl": 20
+            },
+            "shadows": {
+                "light": "0 2px 8px rgba(0,0,0,0.1)",
+                "medium": "0 4px 16px rgba(0,0,0,0.15)",
+                "heavy": "0 8px 24px rgba(0,0,0,0.2)"
+            }
+        },
+        "animations": {
+            "card_hover": "Scale 1.02 + Shadow lift",
+            "button_press": "Scale 0.98",
+            "page_transition": "Fade + Slide",
+            "loading": "Circular progress with color gradient"
+        },
+        "accessibility": {
+            "minimum_touch_target": "48x48 dp",
+            "contrast_ratio": "4.5:1 (WCAG AA)",
+            "font_scaling": true,
+            "screen_reader": "Semantic labels"
+        }
+    },
+    "api_endpoints": {
+        "base_url": "https://api.idsentinel.com/v1",
+        "auth": {
+            "login": "POST /auth/login",
+            "register": "POST /auth/register",
+            "refresh": "POST /auth/refresh",
+            "logout": "POST /auth/logout"
+        },
+        "cnic": {
+            "register": "POST /cnic/register",
+            "activities": "GET /cnic/activities",
+            "lock": "POST /cnic/lock",
+            "unlock": "POST /cnic/unlock"
+        },
+        "document": {
+            "analyze": "POST /document/analyze",
+            "history": "GET /document/history"
+        },
+        "leak": {
+            "check": "POST /leak/check",
+            "subscribe": "POST /leak/subscribe"
+        },
+        "photo": {
+            "verify": "POST /photo/verify",
+            "track": "POST /photo/track",
+            "watermark": "POST /photo/watermark"
+        },
+        "app": {
+            "scan": "POST /app/scan",
+            "report": "POST /app/report"
+        },
+        "sms": {
+            "analyze": "POST /sms/analyze",
+            "report": "POST /sms/report"
+        }
+    },
+    "notifications": {
+        "push_notifications": true,
+        "in_app_notifications": true,
+        "email_alerts": true,
+        "sms_alerts": true,
+        "priority_levels": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+        ],
+        "notification_types": [
+            "cnic_activity",
+            "document_alert",
+            "leak_detected",
+            "photo_misuse",
+            "risky_app",
+            "suspicious_sms"
+        ]
+    },
+    "security": {
+        "encryption": {
+            "data_at_rest": "AES-256",
+            "data_in_transit": "TLS 1.3",
+            "user_data": "End-to-end encrypted"
+        },
+        "authentication": {
+            "methods": [
+                "Email/Password",
+                "Biometric",
+                "2FA"
+            ],
+            "session_management": "JWT with refresh tokens",
+            "password_requirements": {
+                "min_length": 8,
+                "require_uppercase": true,
+                "require_number": true,
+                "require_special": true
+            }
+        },
+        "privacy": {
+            "gdpr_compliant": true,
+            "data_retention": "User controlled",
+            "right_to_deletion": true,
+            "data_portability": true
+        }
+    },
+    "testing": {
+        "unit_tests": "Dart test framework",
+        "widget_tests": "Flutter test",
+        "integration_tests": "Flutter integration test",
+        "e2e_tests": "Patrol or Flutter Driver",
+        "coverage_target": "80%"
+    },
+    "deployment": {
+        "android": {
+            "min_sdk": 21,
+            "target_sdk": 34,
+            "store": "Google Play Store"
+        },
+        "ios": {
+            "min_version": "12.0",
+            "store": "Apple App Store"
+        },
+        "web": {
+            "hosting": "Firebase Hosting / Vercel",
+            "browsers": [
+                "Chrome",
+                "Firefox",
+                "Safari",
+                "Edge"
+            ]
+        },
+        "windows": {
+            "min_version": "Windows 10",
+            "distribution": "Microsoft Store / Direct download"
+        }
+    },
+    "ai_ml_integration": {
+        "document_analysis": {
+            "framework": "TensorFlow Lite",
+            "models": [
+                "Image Classification",
+                "Object Detection",
+                "OCR"
+            ],
+            "inference": "On-device + Cloud hybrid"
+        },
+        "deepfake_detection": {
+            "framework": "PyTorch Mobile",
+            "models": [
+                "FaceForensics++",
+                "Custom trained"
+            ],
+            "features": [
+                "Facial landmarks",
+                "Texture analysis",
+                "Frequency analysis"
+            ]
+        },
+        "nlp_sms": {
+            "framework": "BERT / DistilBERT",
+            "tasks": [
+                "Text classification",
+                "Named entity recognition",
+                "Sentiment analysis"
+            ],
+            "languages": [
+                "English",
+                "Urdu (future)"
+            ]
+        }
+    },
+    "monetization": {
+        "model": "Freemium",
+        "free_tier": {
+            "cnic_monitoring": "1 CNIC",
+            "document_scans": "5 per month",
+            "leak_checks": "2 per month",
+            "ads": true
+        },
+        "premium_tier": {
+            "price": "$4.99/month or $49.99/year",
+            "cnic_monitoring": "Up to 5 CNICs",
+            "document_scans": "Unlimited",
+            "leak_checks": "Unlimited",
+            "priority_support": true,
+            "ads": false,
+            "advanced_analytics": true
+        }
+    },
+    "analytics": {
+        "tools": [
+            "Firebase Analytics",
+            "Mixpanel"
+        ],
+        "tracked_events": [
+            "app_open",
+            "feature_used",
+            "threat_detected",
+            "scan_completed",
+            "notification_clicked",
+            "premium_purchased"
+        ],
+        "user_properties": [
+            "subscription_status",
+            "number_of_cnics_monitored",
+            "alerts_received",
+            "app_version"
+        ]
+    }
+}
