@@ -87,8 +87,8 @@ class _EnhancedHomeScreenState extends ConsumerState<EnhancedHomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = ref.watch(themeProvider);
     final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
       body: Listener(
@@ -255,28 +255,33 @@ class _EnhancedHomeScreenState extends ConsumerState<EnhancedHomeScreen>
         children: [
           // Logo
           Container(
-            padding: const EdgeInsets.all(12),
+            width: 52,
+            height: 52,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  theme.colorScheme.primary,
-                  theme.colorScheme.secondary,
-                ],
-              ),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: theme.colorScheme.primary.withOpacity(0.3),
-                  blurRadius: 12,
-                  spreadRadius: 2,
+                  color: Colors.black.withOpacity(0.15),
+                  blurRadius: 8,
+                  spreadRadius: 1,
                 ),
               ],
             ),
-            child: const Icon(Icons.shield, color: Colors.white, size: 28),
+            padding: const EdgeInsets.all(8),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                'assets/images/logo.png',
+                width: 36,
+                height: 36,
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
           const SizedBox(width: 12),
           Text(
-            'IDSentinel',
+            'ID Sentinel',
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -286,7 +291,7 @@ class _EnhancedHomeScreenState extends ConsumerState<EnhancedHomeScreen>
           IconButton(
             icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
             onPressed: () {
-              ref.read(themeProvider.notifier).state = !isDarkMode;
+              ref.read(themeProvider.notifier).toggle();
             },
             style: IconButton.styleFrom(
               backgroundColor: theme.colorScheme.surfaceContainerHighest,
@@ -554,6 +559,15 @@ class _EnhancedHomeScreenState extends ConsumerState<EnhancedHomeScreen>
         screen: () => const AppCleanseScreen(),
       ),
       _FeatureData(
+        title: 'SMS Scanner',
+        subtitle: 'Detect phishing attempts',
+        description:
+            'Auto-detect fraudulent messages and phishing attempts in your SMS',
+        icon: Icons.message,
+        gradient: [Colors.amber, Colors.orange],
+        screen: () => const SmsScannerScreen(),
+      ),
+      _FeatureData(
         title: 'CNIC Monitor',
         subtitle: 'Track your ID card usage in real-time',
         description:
@@ -588,15 +602,6 @@ class _EnhancedHomeScreenState extends ConsumerState<EnhancedHomeScreen>
         icon: Icons.face,
         gradient: [Colors.pink, Colors.red],
         screen: () => const MirrorTraceScreen(),
-      ),
-      _FeatureData(
-        title: 'SMS Scanner',
-        subtitle: 'Detect phishing attempts',
-        description:
-            'Auto-detect fraudulent messages and phishing attempts in your SMS',
-        icon: Icons.message,
-        gradient: [Colors.amber, Colors.orange],
-        screen: () => const SmsScannerScreen(),
       ),
     ];
 

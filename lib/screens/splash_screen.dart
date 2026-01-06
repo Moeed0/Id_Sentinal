@@ -96,9 +96,9 @@ class _SplashScreenState extends State<SplashScreen>
           // Gradient background
           GradientBackground(
             colors: const [
-              Color(0xFF6C5CE7),
-              Color(0xFF00B894),
-              Color(0xFF0984E3),
+              Color(0xFF004D40), // Deep Teal
+              Color(0xFF4A148C), // Deep Purple
+              Color(0xFF0D47A1), // Deep Blue
             ],
             child: Container(),
           ),
@@ -111,123 +111,114 @@ class _SplashScreenState extends State<SplashScreen>
 
           // Content
           Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Animated Logo
-                AnimatedBuilder(
-                  animation: _logoController,
-                  builder: (context, child) {
-                    return Transform.scale(
-                      scale: _logoScale.value,
-                      child: Transform.rotate(
-                        angle: _logoRotation.value,
-                        child: Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
-                                blurRadius: 30,
-                                spreadRadius: 10,
-                              ),
-                            ],
-                          ),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              // Outer ring
-                              Container(
-                                width: 120,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white.withOpacity(0.5),
-                                    width: 3,
-                                  ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Animated Logo
+                  AnimatedBuilder(
+                    animation: _logoController,
+                    builder: (context, child) {
+                      return Transform.scale(
+                        scale: _logoScale.value,
+                        child: Transform.rotate(
+                          angle: _logoRotation.value,
+                          child: Container(
+                            width: 150,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.3),
+                                  blurRadius: 30,
+                                  spreadRadius: 5,
+                                ),
+                              ],
+                            ),
+                            // Clip the square image to a circle so corners don't stick out
+                            child: ClipOval(
+                              child: Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Image.asset(
+                                  'assets/images/logo.png',
+                                  width: 110,
+                                  height: 110,
+                                  fit: BoxFit.contain,
                                 ),
                               ),
-                              // Shield Icon
-                              const Icon(
-                                Icons.shield,
-                                size: 80,
-                                color: Colors.white,
-                              ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  ),
 
-                const SizedBox(height: 40),
+                  const SizedBox(height: 40),
 
-                // App Name
-                FadeTransition(
-                  opacity: _textFade,
-                  child: Column(
-                    children: [
-                      ShaderMask(
-                        shaderCallback: (bounds) => const LinearGradient(
-                          colors: [Colors.white, Colors.white70],
-                        ).createShader(bounds),
-                        child: const Text(
-                          'IDSentinel',
+                  // App Name
+                  FadeTransition(
+                    opacity: _textFade,
+                    child: Column(
+                      children: [
+                        ShaderMask(
+                          shaderCallback: (bounds) => const LinearGradient(
+                            colors: [Colors.white, Colors.white70],
+                          ).createShader(bounds),
+                          child: const Text(
+                            'ID Sentinel',
+                            style: TextStyle(
+                              fontSize: 48,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 2,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Your Digital Guardian',
                           style: TextStyle(
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 2,
+                            fontSize: 18,
+                            color: Colors.white.withOpacity(0.9),
+                            letterSpacing: 1.5,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Your Digital Guardian',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white.withOpacity(0.9),
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
 
-                const SizedBox(height: 60),
+                  const SizedBox(height: 60),
 
-                // Loading indicator
-                FadeTransition(
-                  opacity: _textFade,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: 40,
-                        height: 40,
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white.withOpacity(0.7),
+                  // Loading indicator
+                  FadeTransition(
+                    opacity: _textFade,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white.withOpacity(0.7),
+                            ),
+                            strokeWidth: 3,
                           ),
-                          strokeWidth: 3,
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Securing your identity...',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white.withOpacity(0.7),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Securing your identity...',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white.withOpacity(0.7),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 

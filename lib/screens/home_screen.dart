@@ -81,8 +81,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = ref.watch(themeProvider);
     final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -131,8 +131,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   opacity: value,
                   child: Transform.translate(
                     offset: Offset(-20 * (1 - value), 0),
-                    child:
-                        Text('IDSentinel', style: theme.textTheme.displaySmall),
+                    child: Text('ID Sentinel',
+                        style: theme.textTheme.displaySmall),
                   ),
                 );
               },
@@ -161,7 +161,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ),
                   ),
                   onPressed: () {
-                    ref.read(themeProvider.notifier).state = !isDarkMode;
+                    ref.read(themeProvider.notifier).toggle();
                   },
                 ),
               );

@@ -25,27 +25,34 @@ class IDSentinelApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDarkMode = ref.watch(themeProvider);
+    final themeMode = ref.watch(themeProvider);
 
     return MaterialApp(
-      title: 'IDSentinel',
+      title: 'ID Sentinel',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      themeMode: themeMode,
       home: const SplashScreen(),
     );
   }
 }
 
 // Theme Provider
-class ThemeNotifier extends Notifier<bool> {
+class ThemeNotifier extends Notifier<ThemeMode> {
   @override
-  bool build() => false;
+  ThemeMode build() => ThemeMode.system;
 
   void toggle() {
-    state = !state;
+    if (state == ThemeMode.system) {
+      state = ThemeMode.light;
+    } else if (state == ThemeMode.light) {
+      state = ThemeMode.dark;
+    } else {
+      state = ThemeMode.system;
+    }
   }
 }
 
-final themeProvider = NotifierProvider<ThemeNotifier, bool>(ThemeNotifier.new);
+final themeProvider =
+    NotifierProvider<ThemeNotifier, ThemeMode>(ThemeNotifier.new);

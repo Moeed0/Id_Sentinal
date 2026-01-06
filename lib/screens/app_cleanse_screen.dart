@@ -18,12 +18,17 @@ class _AppCleanseScreenState extends State<AppCleanseScreen> {
   bool _isScanning = false;
   List<Map<String, dynamic>>? _riskyApps;
   List<Map<String, dynamic>>? _safeApps;
-  String _apiKey = ''; // Store API key
-  final TextEditingController _apiKeyController = TextEditingController();
+  // Hardcoded API Key as requested
+  final String _apiKey =
+      'ae9295fb1e6a077c2252722a121839ee244a8c54aa02a7f4e48bfc333bc2b9df';
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
-    _apiKeyController.dispose();
     super.dispose();
   }
 
@@ -120,7 +125,9 @@ class _AppCleanseScreenState extends State<AppCleanseScreen> {
 
   Future<void> _checkVirusTotal(int index, Map<String, dynamic> appData) async {
     if (_apiKey.isEmpty) {
-      _showApiKeyDialog();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('API Key is missing')),
+      );
       return;
     }
 
@@ -188,44 +195,6 @@ class _AppCleanseScreenState extends State<AppCleanseScreen> {
     }
   }
 
-  void _showApiKeyDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Enter VirusTotal API Key'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Get a free API key from virustotal.com'),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _apiKeyController,
-              decoration: const InputDecoration(
-                labelText: 'API Key',
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              setState(() {
-                _apiKey = _apiKeyController.text.trim();
-              });
-              Navigator.pop(context);
-            },
-            child: const Text('Save'),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _uninstallApp(int index) {
     // For simulation only
     showDialog(
@@ -274,13 +243,6 @@ class _AppCleanseScreenState extends State<AppCleanseScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('AppCleanse'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.vpn_key),
-            onPressed: _showApiKeyDialog,
-            tooltip: 'Set VirusTotal API Key',
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -346,32 +308,40 @@ class _AppCleanseScreenState extends State<AppCleanseScreen> {
 
             if (_riskyApps != null) ...[
               const SizedBox(height: 24),
-              Text(
-                'Scan Results',
-                style: theme.textTheme.titleLarge
-                    ?.copyWith(fontWeight: FontWeight.bold),
+              AnimatedOpacity(
+                opacity: _riskyApps != null ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 500),
+                child: Text(
+                  'Scan Results',
+                  style: theme.textTheme.titleLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
               ),
               const SizedBox(height: 16),
               if (_riskyApps!.isEmpty && _safeApps!.isEmpty)
-                const SizedBox.shrink() // Should not happen if scanned
+                const SizedBox.shrink()
               else if (_riskyApps!.isEmpty &&
                   _safeApps!.isNotEmpty &&
                   !isRealDevice)
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.green.withOpacity(0.3)),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.check_circle, color: Colors.green),
-                      SizedBox(width: 12),
-                      Expanded(
-                          child: Text(
-                              'No risky apps found. Your device is safe!')),
-                    ],
+                AnimatedOpacity(
+                  opacity: 1.0,
+                  duration: const Duration(milliseconds: 500),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.green.withOpacity(0.3)),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.check_circle, color: Colors.green),
+                        SizedBox(width: 12),
+                        Expanded(
+                            child: Text(
+                                'No risky apps found. Your device is safe!')),
+                      ],
+                    ),
                   ),
                 )
               else ...[

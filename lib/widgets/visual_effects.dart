@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 /// A widget that creates beautiful gradient backgrounds with patterns
 class GradientBackground extends StatelessWidget {
@@ -10,8 +11,8 @@ class GradientBackground extends StatelessWidget {
     super.key,
     required this.child,
     this.colors = const [
-      Color(0xFF6C5CE7),
-      Color(0xFF00B894),
+      Color(0xFF2196F3), // Blue
+      Color(0xFF03A9F4), // Light Blue
     ],
     this.showPattern = true,
   });
@@ -151,8 +152,8 @@ class GradientIcon extends StatelessWidget {
     required this.icon,
     this.size = 24,
     this.colors = const [
-      Color(0xFF6C5CE7),
-      Color(0xFF00B894),
+      Color(0xFF2196F3), // Blue
+      Color(0xFF03A9F4), // Light Blue
     ],
   });
 
@@ -238,10 +239,10 @@ class Particle {
   final double speed;
 
   Particle()
-      : x = (DateTime.now().millisecondsSinceEpoch % 1000) / 1000,
-        y = (DateTime.now().microsecondsSinceEpoch % 1000) / 1000,
-        size = 2 + (DateTime.now().millisecondsSinceEpoch % 5),
-        speed = 0.1 + (DateTime.now().microsecondsSinceEpoch % 5) / 10;
+      : x = math.Random().nextDouble(),
+        y = math.Random().nextDouble(),
+        size = 2 + math.Random().nextDouble() * 5,
+        speed = 0.1 + math.Random().nextDouble() * 0.5;
 }
 
 class ParticlePainter extends CustomPainter {
@@ -322,9 +323,9 @@ class AnimatedGradientBorder extends StatefulWidget {
     super.key,
     required this.child,
     this.colors = const [
-      Color(0xFF6C5CE7),
-      Color(0xFF00B894),
-      Color(0xFFFF7675),
+      Color(0xFF2196F3), // Blue
+      Color(0xFF03A9F4), // Light Blue
+      Color(0xFF00BCD4), // Cyan
     ],
     this.width = 2,
     this.borderRadius = 16,

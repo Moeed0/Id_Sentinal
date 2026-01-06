@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -9,11 +10,27 @@ class LeakFinderScreen extends StatefulWidget {
   State<LeakFinderScreen> createState() => _LeakFinderScreenState();
 }
 
-class _LeakFinderScreenState extends State<LeakFinderScreen> {
+class _LeakFinderScreenState extends State<LeakFinderScreen>
+    with SingleTickerProviderStateMixin {
   final _searchController = TextEditingController();
   bool _isScanning = false;
   List<dynamic>? _breaches;
   String? _error;
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+  }
 
   // Using LeakCheck.io Public API (Free)
   // https://leakcheck.io/api/public?check=email
@@ -30,13 +47,14 @@ class _LeakFinderScreenState extends State<LeakFinderScreen> {
 
     try {
       Uri url;
-      // Check for web platform to handle CORS
-      if (const bool.fromEnvironment('dart.library.js_util')) {
-        // Use a more reliable CORS proxy for web
+      // Use kIsWeb for proper platform detection
+      if (kIsWeb) {
+        // Use CORS proxy for web platform
         final targetUrl = 'https://leakcheck.io/api/public?check=$query';
         url = Uri.parse(
             'https://corsproxy.io/?${Uri.encodeComponent(targetUrl)}');
       } else {
+        // Direct API call for mobile/desktop
         url = Uri.parse('https://leakcheck.io/api/public?check=$query');
       }
 
@@ -96,6 +114,9 @@ class _LeakFinderScreenState extends State<LeakFinderScreen> {
       setState(() {
         _isScanning = false;
       });
+      // Trigger fade animation for results
+      _animationController.reset();
+      _animationController.forward();
     }
   }
 
@@ -132,6 +153,7 @@ class _LeakFinderScreenState extends State<LeakFinderScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(title: const Text('LeakFinder')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -180,6 +202,8 @@ class _LeakFinderScreenState extends State<LeakFinderScreen> {
                         filled: true,
                       ),
                       keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.search,
+                      onSubmitted: (_) => _isScanning ? null : _checkBreaches(),
                     ),
                     const SizedBox(height: 16),
                     SizedBox(
@@ -234,132 +258,141 @@ class _LeakFinderScreenState extends State<LeakFinderScreen> {
               ),
             if (_breaches != null) ...[
               if (_breaches!.isEmpty)
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.green.withOpacity(0.3)),
+                FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.green.withOpacity(0.3)),
+                    ),
+                    child: Column(
+                      children: [
+                        const Icon(Icons.check_circle_outline,
+                            color: Colors.green, size: 64),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Good News!',
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'No breaches found for this account.',
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
+                )
+              else
+                FadeTransition(
+                  opacity: _fadeAnimation,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.check_circle_outline,
-                          color: Colors.green, size: 64),
-                      const SizedBox(height: 16),
                       Text(
-                        'Good News!',
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          color: Colors.green,
+                        'Breaches Found: ${_breaches!.length}',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: Colors.red,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'No breaches found for this account.',
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                )
-              else
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Breaches Found: ${_breaches!.length}',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.surfaceContainerHighest
-                            .withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                            color: theme.colorScheme.outline.withOpacity(0.2)),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.info_outline,
-                              size: 20,
-                              color: theme.colorScheme.onSurfaceVariant),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              'Note: Public search only shows the source of the breach. Specific compromised data (passwords, etc.) is hidden for privacy.',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surfaceContainerHighest
+                              .withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                              color:
+                                  theme.colorScheme.outline.withOpacity(0.2)),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.info_outline,
+                                size: 20,
+                                color: theme.colorScheme.onSurfaceVariant),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'Note: Public search only shows the source of the breach. Specific compromised data (passwords, etc.) is hidden for privacy.',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    ..._breaches!.map((breach) => Card(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        breach['Name'] ?? 'Unknown',
-                                        style: theme.textTheme.titleMedium
-                                            ?.copyWith(
-                                          fontWeight: FontWeight.bold,
+                      const SizedBox(height: 16),
+                      ..._breaches!.map((breach) => Card(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          breach['Name'] ?? 'Unknown',
+                                          style: theme.textTheme.titleMedium
+                                              ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Text(
-                                      breach['BreachDate'] ?? '',
-                                      style: theme.textTheme.bodySmall,
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Text(breach['Description'] ?? ''),
-                                const SizedBox(height: 12),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children: (breach['DataClasses']
-                                              as List<dynamic>? ??
-                                          [])
-                                      .map((item) => Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8, vertical: 4),
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  Colors.red.withOpacity(0.1),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Text(
-                                              item.toString(),
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.red,
+                                      Text(
+                                        breach['BreachDate'] ?? '',
+                                        style: theme.textTheme.bodySmall,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(breach['Description'] ?? ''),
+                                  const SizedBox(height: 12),
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: (breach['DataClasses']
+                                                as List<dynamic>? ??
+                                            [])
+                                        .map((item) => Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 4),
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    Colors.red.withOpacity(0.1),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
                                               ),
-                                            ),
-                                          ))
-                                      .toList(),
-                                ),
-                              ],
+                                              child: Text(
+                                                item.toString(),
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ))
+                                        .toList(),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        )),
-                  ],
+                          )),
+                    ],
+                  ),
                 ),
             ],
           ],
@@ -370,6 +403,7 @@ class _LeakFinderScreenState extends State<LeakFinderScreen> {
 
   @override
   void dispose() {
+    _animationController.dispose();
     _searchController.dispose();
     super.dispose();
   }

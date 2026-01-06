@@ -1,6 +1,6 @@
 buildscript {
     extra.apply {
-        set("kotlin_version", "1.9.22")
+        set("kotlin_version", "1.9.10")
     }
 
     repositories {
@@ -9,8 +9,8 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
-        classpath("com.android.tools.build:gradle:8.1.2")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24")
+        classpath("com.android.tools.build:gradle:8.6.0")
     }
 }
 
@@ -19,17 +19,6 @@ allprojects {
         google()
         mavenCentral()
     }
-}
-
-val newBuildDir: Directory =
-    rootProject.layout.buildDirectory
-        .dir("../../build")
-        .get()
-rootProject.layout.buildDirectory.value(newBuildDir)
-
-subprojects {
-    val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
-    project.layout.buildDirectory.value(newSubprojectBuildDir)
 }
 
 subprojects {
@@ -83,4 +72,17 @@ subprojects {
 
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
+}
+subprojects {
+    configurations.all {
+        resolutionStrategy {
+            force(
+                "androidx.core:core:1.12.0",
+                "androidx.core:core-ktx:1.12.0",
+                "androidx.activity:activity:1.8.2",
+                "androidx.activity:activity-ktx:1.8.2",
+                "androidx.browser:browser:1.8.0"
+            )
+        }
+    }
 }
